@@ -15,12 +15,12 @@ export const tasksSlice = createSlice({
             return state.filter(item => item.id !== action.payload.id)
         },
         editTask: (state, action) => {
-
+            return state.map(item => item.id === action.payload.id ? action.payload : item)
         }
     }
 });
 
-export const {addTask, deleteTask, editTask} = tasksSlice.actions;
+export const { addTask, deleteTask, editTask } = tasksSlice.actions;
 
 export default tasksSlice.reducer;
 
