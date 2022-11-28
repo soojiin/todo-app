@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../redux/tasksSlice';
+import { addTask } from '../redux/todosSlice';
 // import { Button } from 'bootstrap';
 
 const AddTodo = () => {
@@ -19,7 +19,7 @@ const AddTodo = () => {
 
         dispatch(
             addTask({
-                task: value // action.payload.task // {task: value}
+                newContent: value // action.payload
             })
         );
 
@@ -31,9 +31,10 @@ const AddTodo = () => {
             <input
                 type='text'
                 className='add-input'
-                placeholder='Add task'
+                placeholder='어떤 일을 하시겠습니까?'
                 value={value}
                 onChange={e => setValue(e.target.value)}
+                // autoFocus
             ></input>
             <button
                 className='add-button'

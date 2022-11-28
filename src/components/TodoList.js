@@ -3,12 +3,12 @@ import TodoItem from './TodoItem';
 import { useSelector } from "react-redux";
 
 const TodoList = () => {
-    const todos = useSelector(state => state.tasks) // tasks = todos
+    const todos = useSelector(state => state.tasks.todolist) // tasks = todos
 
     return (
         <ul className='todo-list'>
             {todos.map(todo => (
-                <TodoItem id={todo.id} content={todo.name} /> // completed={todo.status}
+                <TodoItem key={todo.id} {...todo} /> // id, content, completed, text props로 내려줌
             ))}
         </ul>
     );
