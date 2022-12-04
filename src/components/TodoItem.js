@@ -1,54 +1,79 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteTask} from "../redux/tasksSlice";
+import { deleteTask, editTask, checkTask } from "../redux/todosSlice";
 import styled from 'styled-components';
 
-const Li = styled.li`
+const TaskLi = styled.li`
     display: flex;
     justify-content: space-between;
-    list-style: none;
+    /* list-style: none; */
     padding: 10px;
 `;
 
-const Input = styled.div`
-    ${({check}) => {
-        return check ? `text-decoration: line-through` : null;
-    }}
-`;
-
-const TodoItem = ({ id, content }) => {
-    const [isChecked, setIsChecked]  = useState(false);
-    // const [isEditing, setIsEditing] = useState(false);
+const TodoItem = ({ id, content, completed }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [value, setValue] = useState(content);
 
     const dispatch = useDispatch();
 
-    const Delete = (e) => {
-        dispatch(deleteTask({id: id}))
+    const handleDeleteClick = () => {
+        dispatch(deleteTask({id: id}));
     };
 
-    // const Edit = (e) => {
-    //     dispatch(editTask({}))
-    //     setIsEditing(false);
-    // };
+    const handleEdit = () => {
+        // console.log(value)
+        if (!value.trim().length) { 
+            dispatch(editTask({ id, value }));
+            return; 
+        }
+        if (value === content) {
+            setIsEditing(false);
+            return;
+        }
+        setIsEditing(false)
+        dispatch(editTask({ id, value })); 
+    }
 
-    const handleCheck = () => {
-        setIsChecked(!isChecked);
-    };
+    const handleEnter = (e) => {
+        if (!(e.keyCode === 13 || e.key === 'Enter')) {
+            return;
+        }
+        handleEdit();
+    }
 
     return (
-        <Li className="todo-item" key={id}>
-            <input type='checkbox' onChange={handleCheck} />
-            <Input check={isChecked}>{content}</Input>
-            <button 
-                className="edit-button"
-                // onClick={Edit}
-            >Edit</button>
+        <TaskLi className={completed ? 'completed' : 'active'}>
+            <input 
+                type='checkbox' 
+                className="toggle"
+                onChange={e => dispatch(
+                    checkTask({
+                        id,
+                        checked: e.target.checked
+                    })
+                )}
+                checked={completed} 
+            />
+            {isEditing ?
+            <input 
+                className="edit-todo"
+                value={value}
+                placeholder='내용 없음'
+                onInput={e => setValue(e.target.value)}
+                onKeyDown={handleEnter}
+                onBlur={handleEdit}
+                autoFocus
+            />
+            :
+            <label
+                onDoubleClick={() => setIsEditing(true)}
+            >{ content }</label>  
+            }
             <button 
                 className="delete-button"
-                onClick={Delete}
+                onClick={handleDeleteClick}
             >Delete</button>
-        </Li>
+        </TaskLi>
     );
 };
 

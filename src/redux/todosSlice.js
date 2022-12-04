@@ -8,44 +8,30 @@ const todosSlice = createSlice({
     },
     reducers: {
         addTask: (state, action) => {
+            const { newContent } = action.payload;
             const newTask = { 
                 id: uuid(),
-                content: action.payload.newContent,
+                content: newContent,
                 completed: false,
             }
-            state.todolist.push(newTask);
+            state.todolist.unshift(newTask);
         },
         deleteTask: (state, action) => {
-            return state.filter(item => item.id !== action.payload.id)
-        }, // item -> todo
-        editTask: (state, action) => {
-            // return state.map(item => item.id === action.payload.id ? action.payload : item)
-            
-            const { id, text } = action.payload;
-
-            return state.map(item => item.id === id ? {...item, text} : item); 
-        
+            const { id } = action.payload;
+            state.todolist = state.todolist.filter(item => item.id !== id)
         },
+        editTask: (state, action) => {            
+            const { id, value } = action.payload;
+            state.todolist = state.todolist.map(item => item.id === id ? {...item, content: value} : item); 
+        },
+        // todo의 completed 상태 변경
         checkTask: (state, action) => {
             const { id, checked } = action.payload;
-
-            return state.map(item => item.id === id ? {...item, completed: checked} : item);
-
-            // return state.map(item => item.id === action.payload.id ? {...item, ...action.payload} : item)
+            state.todolist = state.todolist.map(item => item.id === id ? {...item, completed: checked } : item);
         },
-        // filterTask: (state, action) => {
-            
-        // }
     }
 });
 
 export const { addTask, deleteTask, editTask, checkTask } = todosSlice.actions;
 
 export default todosSlice.reducer;
-
-// reducer: tasksSlice.reducer
-// action creators: tasksSlice.actions.addTask, tasksSlice.actions.deleteTask
-// actionType:
-//     tasksSlice.actions.addTask.type: 'todos/addTask'
-//     tasksSlice.actions.deleteTask.type: 'todos/deleteTask'
-// payload: { id: ~~, content: '~~', completed: false}
