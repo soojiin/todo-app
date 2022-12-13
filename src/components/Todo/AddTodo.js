@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addTask } from '../../redux/todosSlice';
+// import { useDispatch } from 'react-redux';
+// import { addTask } from '../../redux/todosSlice';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { add } from '../../api/add';
+import uuid from 'react-uuid';
 
 const Div = styled.div`
     display: flex;
@@ -39,7 +41,7 @@ const Button = styled.button`
 
 const AddTodo = () => {
     const [value, setValue] = useState('');
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const handleAddClick = () => {
         // e.preventDefault(); 
@@ -51,11 +53,17 @@ const AddTodo = () => {
             return;
         }
 
-        dispatch(
-            addTask({
-                newContent: value // action.payload
-            })
-        );
+        // dispatch(
+        //     addTask({
+        //         newContent: value // action.payload
+        //     })
+        // );
+
+        add({
+            id: uuid(),
+            content: value,
+            completed: false,
+        })
 
         setValue('');
     };

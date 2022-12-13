@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { deleteTask, editTask, checkTask } from "../../redux/todosSlice";
+// import { useDispatch } from "react-redux";
+// import { deleteTask, editTask, checkTask } from "../../redux/todosSlice";
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { del } from '../../api/delete';
+import { taskUpdate, checkboxUpdate } from '../../api/update';
 
 const Li = styled.li`
     display: flex;
@@ -56,16 +58,21 @@ const TodoItem = ({ id, content, completed }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState(content);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const handleDeleteClick = () => {
-        dispatch(deleteTask({id: id}));
+        // dispatch(deleteTask({id: id}));
+        del(id);
     };
 
     const handleEdit = () => {
         // console.log(value)
         if (!value.trim().length) { 
-            dispatch(editTask({ id, value }));
+            // dispatch(editTask({ id, value }));
+            taskUpdate({
+                id: id,
+                content: value,
+            })
             return; 
         }
         if (value === content) {
@@ -73,7 +80,11 @@ const TodoItem = ({ id, content, completed }) => {
             return;
         }
         setIsEditing(false)
-        dispatch(editTask({ id, value })); 
+        // dispatch(editTask({ id, value })); 
+        taskUpdate({
+            id: id,
+            content: value,
+        })
     }
 
     const handleEnter = (e) => {
@@ -88,12 +99,16 @@ const TodoItem = ({ id, content, completed }) => {
             <CheckboxInput
                 // type='checkbox' 
                 className="toggle"
-                onChange={e => dispatch(
-                    checkTask({
-                        id,
-                        checked: e.target.checked
-                    })
-                )}
+                // onChange={e => dispatch(
+                //     checkTask({
+                //         id,
+                //         checked: e.target.checked
+                //     })
+                // )}
+                onChange={e => checkboxUpdate({
+                    id: id,
+                    completed: e.target.checked
+                })}
                 checked={completed} 
             />
             {isEditing ?
